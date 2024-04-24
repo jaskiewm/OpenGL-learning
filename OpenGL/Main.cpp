@@ -88,33 +88,22 @@ int main()
 	glDeleteShader(fragmentShader);
 
 
-	// VAO - Vertex Array Object | VBO - Vertex Buffer Object
-	// Create reference containers for the Vertex Array Object (VAO) and Vertex Buffer Object (VBO)
-	GLuint VAO, VBO; //VA0, and VBO is an array of references
-
-	//Generates the VAO and VBO with 1 object each
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
-	// Make VAO the current Vertex Array Object by Binding it
-	glBindVertexArray(VAO);
 	
-	//Make VBO object the current Object Buffer by binding it
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// Generates VAO (Vertex array object) and binds it
+	VAO VAO1;
+	VAO1.Bind();
 
-	//Store data in OpenGL. Introduce certices into the VBO (now the GL_ARRAY_BUFFER is the VBO)
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); //Static is set once and used many times
+	//Builds and links Buffer Objects to Indices & Vertices
+	VBO VBO1(vertices, sizeof(vertices));
+	EBO EBO1(indices, sizeof(indices));
 
-	//Configures the Vertex Attribute so that OpenGL knows how to read the VBO
-	//(Pos of vertex attr, num of values (3 vertices), value type, Coord are integers?, data size, start position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	// Links VBO to VAO
+	VAO1.LinkVBO(VBO1, 0);
 
-	// Enable vertex attribute so OGL knows to use it
-	glEnableVertexAttribArray(0); 
-
-	// Binds the buffer to 0 so we can't make any unwanted changes with functions
-	glBindBuffer(GL_ARRAY_BUFFER, 0); 
-	glBindVertexArray(0);
+	// Unbinds all objects (to prevent modifying them)
+	VAO1.Unbind();
+	VBO1.Unbind();
+	EBO1.Unbind();
 
 	//-------Window Settings-------//
 	//Specify background colour
@@ -131,9 +120,9 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		//Tell OGL which shader program we want to use
-		glUseProgram(shaderProgram);
+		shaderProgram.Activate();
 		// Bind the VAO so OGL knows how to use it
-		glBindVertexArray(VAO);
+		VAO1.Bind();
 		// Draw triangle using the GL_TRIANGLES primitive
 		glDrawArrays(GL_TRIANGLES, 0, 3); //Specifies primitive, starting index, number of vertices
 		glfwSwapBuffers(window); //Ensure buffers are swapped so we get a new image each frame
@@ -141,10 +130,11 @@ int main()
 		glfwPollEvents(); //Process all GLFW events
 	}
 
-	//Deleting objects
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteProgram(shaderProgram);
+	//-------Deleting Objects, closing OGL-------//
+	VAO1.Delete();
+	VBO1.Delete();
+	EBO1.Delete();
+	shaderProgram.Delete();
 
 	//Close window
 	glfwDestroyWindow(window);
