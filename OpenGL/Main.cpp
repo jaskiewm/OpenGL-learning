@@ -58,36 +58,10 @@ int main()
 	//Area of openGL we want rendering (x=0,y=0 to x=800,y=800), the viewport
 	glViewport(0,0,800,800); 
 
-
-	//-------Creating shaders (both vertex and fragment)-------//
-	// Get shader object and it's reference
-	// Create Shader -> attach source code to shader -> compile shader
-	// Create shader program -> link shaders to program -> delete shaders
-
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);//unsigned integer (positive integer)
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL); //Attach vertex shader source to vertex shader object
-	glCompileShader(vertexShader); //Compiles the shader source into machine
-
-	// Get shader object and it's reference
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);//unsigned integer (positive integer)
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader); //Compiles the shader source into machine
-
-	// Create the Shader Program Object and its references
-	GLuint shaderProgram = glCreateProgram();
-
-	//Attach vertex and fragment shaders to the shader program
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-
-	// Link all shaders together into the Shader Program
-	glLinkProgram(shaderProgram);
-
-	//Delete the shaders because they are in the program from above lines
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-
+	//----------Creating shader program and objects--------------//
+	
+	//Generates shader objects (using default vert & frag)
+	Shader shaderProgram("default.vert", "default.frag");
 	
 	// Generates VAO (Vertex array object) and binds it
 	VAO VAO1;
