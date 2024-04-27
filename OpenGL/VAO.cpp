@@ -7,10 +7,13 @@ VAO::VAO()
 }
 
 //Links a VBO to the VAO
-void VAO::LinkVBO(VBO& VBO, GLuint layout)
+// Offset = initial offsetting byte number to get to the RGB bytes (only colour needs this as it starts at the 4th byte)
+// Stride = distance in bytes between vertices (ie, coordinate stride vs color stride)
+
+void VAO::LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset)
 {
 	VBO.Bind();
-	glVertexAttribPointer(layout, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
 	glEnableVertexAttribArray(layout);
 	VBO.Unbind();
 }
